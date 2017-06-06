@@ -1,4 +1,13 @@
 from htmldom import htmldom
+import urllib.request
+
+def checkUrl(test):
+    req = urllib.request.Request(test)
+    try:
+        urllib.request.urlopen(req)
+        return True
+    except urllib.error.URLError as e:
+        return False
 
 def createDOM(url, letter):
     dom = htmldom.HtmlDom(url).createDom()
@@ -20,6 +29,10 @@ def createDOM(url, letter):
     letList.sort()
     print ("Letters in words: "+ str(letList))
 
-testUrl = input("URL please")
-testL = input("Letter please")
-createDOM(testUrl, testL)
+testUrl = input("URL please ")
+if not checkUrl(testUrl):
+    print("Try again")
+    testUrl = input("URL please ")
+else:
+    testL = input("Letter please ")
+    createDOM(testUrl, testL)
