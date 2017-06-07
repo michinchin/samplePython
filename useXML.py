@@ -1,13 +1,31 @@
-from lxml import html
+from lxml import html, etree
+import os
 import requests
+import re
 
-def useXML(url, letter):
-    page = requests.get(url)
-    tree = html.fromstring(page.content)
+file = open("/Users/abby/PycharmProjects/sample/SCMLfile.scml")
 
-    para = tree.xpath('//p/text()')
-    print (para)
+def useXML():
+    tree = etree.parse(file)
+    # print(etree.tostring(tree.getroot()))
 
-testUrl = input("URL please ")
-testL = input("Letter please ")
-useXML(testUrl, testL)
+    chap = tree.xpath('//chapter') #find chapter tags in document
+    print("Number of chapter tags in document: ")
+    print (len(chap)) #print cnt
+
+    sideb = tree.xpath('//chapter/sidebar') #find sidebar tags within chapter
+    print("Number of sidebar tags within a chapter in document: ")
+    print(len(sideb)) #print cnt
+
+    regexpNS = "http://exslt.org/regular-expressions"
+    patt = tree.xpath("//chapter[@id]")
+    pattern = re.compile("chapter id = 'ch*'")
+    cnt = 0
+
+    for each in patt:
+        if pattern.match(each):
+            cnt += 1
+    print("Number of chapter tags with id ch#####: ")
+    print (cnt)
+
+useXML()
