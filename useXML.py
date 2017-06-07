@@ -17,15 +17,14 @@ def useXML():
     print("Number of sidebar tags within a chapter in document: ")
     print(len(sideb)) #print cnt
 
-    regexpNS = "http://exslt.org/regular-expressions"
-    patt = tree.xpath("//chapter[@id]")
-    pattern = re.compile("chapter id = 'ch*'")
-    cnt = 0
-
-    for each in patt:
-        if pattern.match(each):
-            cnt += 1
     print("Number of chapter tags with id ch#####: ")
+    patt = tree.xpath("//chapter[@id]")
+    cnt = 0
+    for a in patt:
+        strEach = str(etree.tostring(a))
+        pattern = "ch[0-9][0-9][0-9][0-9]?"
+        if re.search(pattern, strEach):
+            cnt+=1
     print (cnt)
 
 useXML()
