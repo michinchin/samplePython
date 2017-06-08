@@ -1,50 +1,33 @@
-from lxml import html, etree
+import xml.etree.ElementTree as ET
 import os
 import requests
 import re
 
-global dictsb
-dictsb = {}
-
 file = open("/Users/abby/PycharmProjects/sample/SCMLfile.scml")
-tree = etree.parse(file)
+tree = ET.parse(file)
 
-def checkForNodes(chapter):
-    swpat = "sbws-[0-9]{8}-[0-9]{4}"
-    sidebar = chapter.xpath('sidebar')
-
-    for a in sidebar:
-        id = a.get("id")
-        text = str(a.xpath('sbh//text()'))
-        if re.match(swpat, id):
-            dictsb.update({text : id})
 
 def useXML():
     # print(etree.tostring(tree.getroot()))
 
-    chap = tree.xpath('//chapter') #find chapter tags in document
+    chap = tree.findall('.//chapter') #find chapter tags in document
     print("Number of chapter tags in document: ")
-    # print (len(chap)) #print cnt
+    print (len(chap)) #print cnt
 
-    # print("Number of sidebar tags within each chapter: ")
+    print("Number of sidebar tags within each chapter: ")
     for num, c in enumerate(chap):
         cid = c.get("id")
-        # print(num , ". " "Chapter %s" % id + ": " , len(c.xpath('sidebar')))
-        if len(c.xpath('sidebar')) > 0:
-            checkForNodes(c)
+        if num == 71:
+            print(num , ". " "Chapter %s" % cid + ": " , len((c.find('sidebar'))))
 
-    cnt = 0
-    for k, a in dictsb.items():
-        print(str(cnt) + ". "+ str(a) + str(k))
-        cnt += 1
-    # print("Number of chapter tags with id ch#####: ")
-    patt = tree.xpath("//chapter[@id]")
-    cnt = 0
+    print("Number of chapter tags with id ch#####: ")
+    patt = tree.findall(".//chapter[@id]")
     pattern = "ch[0-9][0-9][0-9][0-9][0-9]"
+    cnt = 0
     for a in patt:
-        if re.match(pattern, a.get("id")): # get returns the text within attribute
+        if re.match(pattern, str(a.get("id"))):  # get returns the text within attribute
             cnt += 1
-    # print (cnt)
+    print (cnt)
 
 
 useXML()
