@@ -3,17 +3,22 @@ import os
 import requests
 import re
 
+global dictsb
+dictsb = {}
+
 file = open("/Users/abby/PycharmProjects/sample/SCMLfile.scml")
 tree = etree.parse(file)
 
 def checkForNodes(chapter):
     swpat = "sbws-[0-9]{8}-[0-9]{4}"
     sidebar = chapter.xpath('sidebar')
+
     for a in sidebar:
         id = a.get("id")
+        text = str(a.xpath('sbh//text()'))
         if re.match(swpat, id):
-            global listsb
-            listsb = [str(id) + ": "]
+            dictsb.update({text : id})
+
 def useXML():
     # print(etree.tostring(tree.getroot()))
 
@@ -27,8 +32,11 @@ def useXML():
         # print(num , ". " "Chapter %s" % id + ": " , len(c.xpath('sidebar')))
         if len(c.xpath('sidebar')) > 0:
             checkForNodes(c)
-    print(listsb)
 
+    cnt = 0
+    for k, a in dictsb.items():
+        print(str(cnt) + ". "+ str(a) + str(k))
+        cnt += 1
     # print("Number of chapter tags with id ch#####: ")
     patt = tree.xpath("//chapter[@id]")
     cnt = 0
